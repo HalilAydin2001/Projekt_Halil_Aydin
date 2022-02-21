@@ -1,0 +1,564 @@
+using System;
+using System.Threading;
+
+
+namespace Halil_Aydin_ATM
+{
+    internal class Program
+    {
+        //_____________________________________________________Main_Methode______________________________________________________//
+
+        static void Main(string[] args)                    /////////////////////
+        {                                                 // Pin Code = 2001 //
+                                                         /////////////////////
+            // Titel & Design
+            Console.Title = "$$$ ATM Sparbank $$$";
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.SetWindowSize(67, 29);
+
+            // Variablen
+            decimal kontostand = 249000000000M;
+            decimal einzahlen, abheben;
+            int action;
+            char dollar = '$';
+
+            // Start Reihenfolge
+            PinQuery();
+            ProgressBar();
+            Console.CursorVisible = false;
+            Console.Clear(); Homescreen(); WelcomeScreen2(); EmptyScreen();
+            Thread.Sleep(2000);
+            Console.CursorVisible = true;
+            Console.Clear(); OptionScreen();
+
+
+            //_________________________________________________Programm Schleife_________________________________________________//
+
+            while (true)
+            {
+                Console.CursorVisible = true;
+                Console.SetCursorPosition(11, 25);
+                action = Convert.ToInt32(Console.ReadLine());
+
+                switch (action)
+                {
+
+                    //_____________________________________________Kontostand____________________________________________________//
+
+                    case 1:
+
+                        Console.CursorVisible = false;
+                        Console.Clear(); Homescreen();
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("| Ihr aktueller Kontostand beträgt: {0}{1}                |", kontostand, dollar);
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        PressKeyScreen();
+                        Console.ReadKey();
+                        Console.Clear(); OptionScreen();
+                        Console.CursorVisible = true;
+                        break;
+
+
+                    //______________________________________________Abheben______________________________________________________//
+
+                    case 2:
+
+                    jump_back_to_case2:
+                        Console.CursorVisible = true;
+                        Console.Clear(); Homescreen();
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("| Bitte geben Sie den Betrag ein den sie einzahlen               |");
+                        Console.WriteLine("| lassen möchten:                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("| Geben Sie [0} ein um zurück zu gehen.                          |");
+                        EmptyScreen();
+                        Console.SetCursorPosition(18, 12);
+                        abheben = decimal.Parse(Console.ReadLine());
+
+                        if (abheben >= 5)
+                        {
+                            //__________________________________Wert ist nicht in 5er Schritten__________________________________//
+
+                            if (abheben % 5 != 0)
+                            {
+                                Console.CursorVisible = false;
+                                Console.Clear(); Homescreen();
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Der eingegebene Wert muss in 5er Schritten erfolgen.           |");
+                                Console.WriteLine("| Bitte warten Sie einen Moment und versuchen Sie es erneut.     |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                EmptyScreen();
+                                Thread.Sleep(2500);
+                                goto jump_back_to_case2;
+                            }
+
+                            //______________________________________Wert ist zu hoch_____________________________________________//
+
+                            else if (abheben > kontostand)
+                            {
+                                Console.CursorVisible = false;
+                                Console.Clear(); Homescreen();
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Unzureichende Deckung, bitte warten Sie einen Moment           |");
+                                Console.WriteLine("| und versuchen Sie es erneut.                                   |");
+                                Console.WriteLine("| Ihr aktueller Kontostand beträgt {0}{1}                 |", kontostand, dollar);
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                EmptyScreen();
+                                Thread.Sleep(2500);
+                                Console.Clear();
+                                goto jump_back_to_case2;
+                            }
+
+                            //___________________________________Abheben hat funktioniert________________________________________//
+
+                            else if (abheben % 5 == 0)
+                            {
+                                Console.CursorVisible = false;
+                                Console.Clear(); Homescreen();
+                                kontostand = kontostand - abheben;
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Die Transaktion war erfolgreich,                               |");
+                                Console.WriteLine("| Sie haben erfolgreich Bargeld ausgezahlt.                      |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Ihr neuer Kontostand beträgt: {0}{1}                    |", kontostand, dollar);
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                PressKeyScreen();
+                                Console.ReadKey();
+                                Console.Clear(); OptionScreen();
+                            }
+                        }
+
+                        //___________________________________________Zurück gehen________________________________________________//
+
+                        else if (abheben == 0)
+                        {
+                            Console.Clear(); OptionScreen();
+                        }
+
+                        //_____________________________________Wert muss mindestens 5 sein_______________________________________//
+
+                        else
+                        {
+                            Console.CursorVisible = false;
+                            Console.Clear(); Homescreen();
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("| Sie müssen mindestens 5{0} abheben.                              |", dollar);
+                            Console.WriteLine("| Bitte warten Sie einen Moment und versuchen Sie es erneut.     |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            
+                            EmptyScreen();
+                            Thread.Sleep(2500);
+                            goto jump_back_to_case2;
+                        }
+                        break;
+
+
+                    //________________________________________________Einzahlen__________________________________________________//
+
+                    case 3:
+
+                    jump_back_to_case3:
+                        Console.CursorVisible = true;
+                        Console.Clear(); Homescreen();
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("| Bitte geben Sie den Betrag ein den sie auszahlen               |");
+                        Console.WriteLine("| lassen möchten:                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("| Geben Sie [0} ein um zurück zu gehen.                          |");
+                        EmptyScreen();
+                        Console.SetCursorPosition(18, 12);
+                        einzahlen = decimal.Parse(Console.ReadLine());
+
+                        if (einzahlen >= 5)
+                        {
+                            //__________________________________Wert ist nicht in 5er Schritten__________________________________//
+
+                            if (einzahlen % 5 != 0)
+                            {
+                                Console.CursorVisible = false;
+                                Console.Clear(); Homescreen();
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Der eingegebene Wert muss in 5er Schritten erfolgen.           |");
+                                Console.WriteLine("| Bitte warten Sie einen Moment und versuchen Sie es erneut.     |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                EmptyScreen();
+                                Thread.Sleep(2500);
+                                goto jump_back_to_case3;
+                            }
+
+                            //_________________________________Einzahlen hat funktioniert________________________________________//
+
+                            else if (einzahlen % 5 == 0)
+                            {
+                                Console.CursorVisible = false;
+                                Console.Clear(); Homescreen();
+                                kontostand = kontostand + einzahlen;
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Die Transaktion war erfolgreich,                               |");
+                                Console.WriteLine("| Sie haben erfolgreich Bargeld eingezahlt.                      |");
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("| Ihr neuer Kontostand beträgt: {0}{1}                    |", kontostand, dollar);
+                                Console.WriteLine("|                                                                |");
+                                Console.WriteLine("|                                                                |");
+                                PressKeyScreen();
+                                Console.ReadKey();
+                                Console.Clear(); OptionScreen();
+                            }
+                        }
+
+                        //___________________________________________Zurück gehen________________________________________________//
+
+                        else if (einzahlen == 0)
+                        {
+                            Console.Clear(); OptionScreen();
+                        }
+
+                        //_____________________________________Wert muss mindestens 5 sein_______________________________________//
+
+                        else
+                        {
+                            Console.CursorVisible = false;
+                            Console.Clear(); Homescreen();
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("| Sie müssen mindestens 5{0} auszahlen.                            |", dollar);
+                            Console.WriteLine("| Bitte warten Sie einen Moment und versuchen Sie es erneut.     |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            Console.WriteLine("|                                                                |");
+                            EmptyScreen();
+                            Thread.Sleep(2500);
+                            goto jump_back_to_case3;
+                        }
+                        break;
+
+
+                    //__________________________________________________Credits__________________________________________________//
+
+                    case 4:
+
+                        Console.CursorVisible = false;
+                        Console.Clear(); Homescreen(); CreditsScreen();
+                        Console.ReadKey();
+                        Console.Clear(); OptionScreen();
+                        break;
+
+
+                    //___________________________________________________Ende____________________________________________________//
+
+                    case 5:
+
+                        Console.CursorVisible = false;
+                        Console.Clear(); Homescreen();
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                          Vielen Dank!                          |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|                                                                |");
+                        Console.WriteLine("|      Das Programm wird sich in wenigen Sekunden schließen.     |");
+                        EmptyScreen();
+                        Thread.Sleep(2500);
+                        Environment.Exit(0);
+                        break;
+
+
+                    //_____________________________________________Falsche Eingabe_______________________________________________//
+
+                    default:
+                        Console.CursorVisible = false;
+                        Console.Clear(); WrongInputScreen();
+                        Thread.Sleep(1500);
+                        Console.Clear(); OptionScreen();
+                        break;
+                }
+            }
+        }
+
+
+        //_____________________________________________________Design____________________________________________________________//
+
+        static void OptionScreen()
+        {
+            Console.WriteLine(" ________________________________________________________________ ");
+            Console.WriteLine("|                 _______    ________    ____  ___               |");
+            Console.WriteLine("|                //  __  |  ||__   __|  //   |/   |              |");
+            Console.WriteLine("|               //  ___  |     || |    // /| / /| |              |");
+            Console.WriteLine("|              //__/  |__|     ||_|   //_/ |__/ |_|              |");
+            Console.WriteLine("|              by Sparbank(R)                                    |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                  V 0.1.7 Alpha |");
+            Console.WriteLine("|________________________________________________________________|");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                 Willkommen bei Ihrer Sparbank!                 |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|         Bitte wählen Sie eine der folgenden Optionen           |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|         [1] [ Kontostand ]            [2] [ Abheben ]          |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|         [3] [ Einzahlen  ]            [4] [ Credits ]          |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("| Eingabe:                     [5]                               |");
+            Console.WriteLine("|                       [    Beenden    ]                        |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+        static void WrongInputScreen()
+        {
+            Console.WriteLine(" ________________________________________________________________ ");
+            Console.WriteLine("|                 _______    ________    ____  ___               |");
+            Console.WriteLine("|                //  __  |  ||__   __|  //   |/   |              |");
+            Console.WriteLine("|               //  ___  |     || |    // /| / /| |              |");
+            Console.WriteLine("|              //__/  |__|     ||_|   //_/ |__/ |_|              |");
+            Console.WriteLine("|              by Sparbank(R)                                    |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                  V 0.1.7 Alpha |");
+            Console.WriteLine("|________________________________________________________________|");                             
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                 Es konnte keine gültige Eingabe                |");
+            Console.WriteLine("|                 Registriert werden!                            |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|         Bitte wählen Sie eine der folgenden Optionen           |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|         [1] [ Kontostand ]            [2] [ Abheben ]          |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|         [3] [ Einzahlen  ]            [4] [ Credits ]          |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("| Eingabe:                     [5]                               |");
+            Console.WriteLine("|                       [    Beenden    ]                        |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+        static void Homescreen()
+        {
+            Console.WriteLine(" ________________________________________________________________ ");
+            Console.WriteLine("|                 _______    ________    ____  ___               |");
+            Console.WriteLine("|                //  __  |  ||__   __|  //   |/   |              |");
+            Console.WriteLine("|               //  ___  |     || |    // /| / /| |              |");
+            Console.WriteLine("|              //__/  |__|     ||_|   //_/ |__/ |_|              |");
+            Console.WriteLine("|              by Sparbank(R)                                    |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                  V 0.1.7 Alpha |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+        static void WelcomeScreen()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|        Hallo und Herzlich Willkommen bei Ihrer Sparbank!       |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|  Bitte geben Sie Ihren Persönliche Identifikationsnummer ein!  |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+        static void WelcomeScreen2()
+        {
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                 Willkommen zurück Elon Musk!                   |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            
+        }
+
+        static void EmptyScreen()
+        {
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+        static void PressKeyScreen()
+        {
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("| Beliebige Taste zum fortfahren...                              |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+        static void CreditsScreen()
+        {
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("| ###############################################################|");
+            Console.WriteLine("|                                |                               |");
+            Console.WriteLine("| Fully developed by Halil Aydin | Rights by [Sparbank(C)]       |");
+            Console.WriteLine("| [THIS PROGRAMM IS PROTECTED    | Credits: Coding for passion   |");
+            Console.WriteLine("| UNDER LAWS BY NO ONE]          | Version: 0.1.7 alpha          |");
+            Console.WriteLine("|                                |                               |");
+            Console.WriteLine("| ###############################################################|");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("| Beliebige Taste zum fortfahren...                              |");
+            Console.WriteLine("|                                                                |");
+            Console.WriteLine("|________________________________________________________________|");
+        }
+
+
+        //____________________________________________________Progress Bar_______________________________________________________//
+
+        static void ProgressBar()
+        {
+            Homescreen();
+            Console.CursorVisible = false;
+            Console.SetCursorPosition(1, 6);
+
+            for (int i = 0; i <= 50; i++)
+            {
+                for (int y = 0; y < i; y++)
+                {
+                    Console.Write("█");
+                }
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write(i + "/50  Lädt...");
+                Console.SetCursorPosition(1, 6);
+                Thread.Sleep(1);
+
+            }
+            Console.Clear();
+            Console.CursorVisible = true;
+
+        }
+
+
+        //____________________________________________________Pin Eingabe________________________________________________________//
+
+        static void PinQuery()
+        {
+            int pin_code = 2001;
+            int attempt;
+            int count = 4;
+
+            do
+            {
+                Homescreen(); WelcomeScreen();
+                Console.WriteLine("|                                                                |");
+                Console.WriteLine("|                                                                |");
+                Console.WriteLine("| Bitte geben Sie Ihren Pin Code ein:                            |");
+                EmptyScreen();
+                Console.SetCursorPosition(38, 16);
+                Console.CursorVisible = true;
+                attempt = Convert.ToInt32(Console.ReadLine());
+
+
+                if (attempt == pin_code)
+                {
+                    Console.Clear();
+                }
+
+                else if (count == 1)
+                {
+                    Console.CursorVisible = false;
+                    Console.Clear(); Homescreen();
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|      Sie haben Ihren Pin 3 mal in Folge falsch eingegeben!     |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("| Ihr Account wurde gesperrt, bitte kontaktieren Sie den Service |");
+                    EmptyScreen();
+                    Thread.Sleep(4000);
+                    Environment.Exit(0);
+                }
+
+                else if (attempt != pin_code)
+                {
+                    count--;
+                    Console.CursorVisible = false;
+                    Console.Clear(); Homescreen();
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("|                                                                |");
+                    Console.WriteLine("| Falsche Eingabe registriert...Bitte warten Sie einen           |");
+                    Console.WriteLine("| Moment und versuchen Sie es dann erneut.                       |", count);
+                    Console.WriteLine("|                                                                |");
+                    EmptyScreen();
+                    Thread.Sleep(2000);
+                    Console.Clear();
+                }
+            } while (attempt != pin_code);
+        }
+    }   //____________________________________________________Coming Soon________________________________________________________//     
+}       
+        // Geplante features: 
+        //                   - MySQL Datenbank 
+        //                   - Registrieren, anmelden & Account ändern/löschen
+        //                   - Statistiken 
+        //                   - Sprache umstellen auf Englisch, Deutsch
+        //                   - Zurück zur Pin Eingabe nach längerer Inaktivität
+        //                   - Maximum von 15 000$ beim ein- und auszahlen
+        //                   - Gebühren bei Überschreitung des Maximums
+        //
+        // Vielen Dank das Sie sich mein Programm angesehen haben! Gerne nehme ich Verbesserungsvorschläge und Kritik an!
